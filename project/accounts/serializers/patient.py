@@ -32,11 +32,20 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 
-class RestorePatientSerializer(serializers.Serializer):
+class RetrieveDeletedPatientSerializer(serializers.Serializer):
     id =  serializers.CharField()
     def validate_id(self, value):
         try:
             patient = Patient.deleted_objects.get(id=value)
+        except Patient.DoesNotExist:
+            raise serializers.ValidationError("Patient does not exist.")
+        return patient
+    
+class RetrievePatientSerializer(serializers.Serializer):
+    id =  serializers.CharField()
+    def validate_id(self, value):
+        try:
+            patient = Patient.objects.get(id=value)
         except Patient.DoesNotExist:
             raise serializers.ValidationError("Patient does not exist.")
         return patient
