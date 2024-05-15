@@ -59,6 +59,15 @@ class PatientViewSet(viewsets.ModelViewSet):
         
         
         return Response(PatientSerializer(patient).data, status=status.HTTP_201_CREATED)
+  
+    def retrieve(self, request, *args, **kwargs):
+        response= super().retrieve(request, *args, **kwargs)
+        visits=Visit.objects.filter(patient=self.get_object())
+        all_doctors = Doctor.objects.filter(visits__in=visits).distinct()
+        response.data['doctors']= DoctorSerializer(all_doctors, many=True).data
+        return response
+    
+
     @swagger_auto_schema(
         manual_parameters=[
             openapi.Parameter(
