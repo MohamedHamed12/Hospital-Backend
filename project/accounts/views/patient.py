@@ -82,15 +82,18 @@ class PatientViewSet(viewsets.ModelViewSet):
         result_page = paginator.paginate_queryset(deleted_patients, request)
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
-    
+   
+
+        
+
 
 from rest_framework import viewsets
 class DeletedPatientView(viewsets.ViewSet):
-    serializer_class = RestorePatientSerializer
+    serializer_class = RetrieveDeletedPatientSerializer
     queryset = Patient.deleted_objects.all()
     permission_classes = [IsAuthenticated,CustomPermission]
     def restore(self, request, *args, **kwargs):
-        serializer = RestorePatientSerializer(data={'id':kwargs['pk']})
+        serializer = RetrieveDeletedPatientSerializer(data={'id':kwargs['pk']})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -98,10 +101,29 @@ class DeletedPatientView(viewsets.ViewSet):
         instance.undelete()
         return Response(status=status.HTTP_200_OK)
     def destroy(self, request, *args, **kwargs):
-        serializer = RestorePatientSerializer(data={'id':kwargs['pk']})
+        serializer = RetrieveDeletedPatientSerializer(data={'id':kwargs['pk']})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         instance = serializer.validated_data['id']
         instance.delete(force_policy=HARD_DELETE)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class DoctorsOfPatient(viewsets.ViewSet):
+    serializer_class = DoctorSerializer
+    pagination_class = CustomPagination
+    def get(self,request,*args,**kwargs):
+            serializer = RetrievePatientSerializer(data={'id':kwargs['pk']})
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            
+            paginator = self.pagination_class()
+            instance = serializer.validated_data['id']
+            visits=Visit.objects.filter(patient=instance)
+            all_doctors = Doctor.objects.filter(visits__in=visits).distinct()
+
+            result_page = paginator.paginate_queryset(all_doctors, request)
+            serializer = DoctorSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)

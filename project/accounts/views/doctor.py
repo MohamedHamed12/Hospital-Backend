@@ -75,7 +75,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
         result_page = paginator.paginate_queryset( deleted_doctors, request)
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
-
+        
 
 
 from rest_framework import viewsets

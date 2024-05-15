@@ -41,5 +41,8 @@ urlpatterns = [
     path('deleted-employee/restore/<str:pk>/', DeletedEmployeeView.as_view({'post': 'restore'}), name='employee-restore'),
     path('deleted-employee/delete/<str:pk>/', DeletedEmployeeView.as_view({'delete': 'destroy'}), name='deleted-employee-delete'),
 
+
+    path('patient/doctors/<str:pk>/', DoctorsOfPatient.as_view({'get': 'get'}), name='patient-doctors'),
+
     path('', include(router.urls)),
 ]
