@@ -70,7 +70,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
         else:
             return super().destroy(request, *args, **kwargs)
     
-    @method_decorator(cache_page(60))  
+    # @method_decorator(cache_page(60))  
     def get_deleted(self, request, *args, **kwargs):
         paginator = self.pagination_class()
         deleted_doctors = Doctor.deleted_objects.all()
@@ -78,11 +78,11 @@ class DoctorViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
     
-    @method_decorator(cache_page(60))  
+    # @method_decorator(cache_page(60))  
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
-    @method_decorator(cache_page(60))  
+    # @method_decorator(cache_page(60))  
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
       
