@@ -122,3 +122,20 @@ class TestSetup(TestCase):
         token = self.get_token(data['national_id'], data['national_id'])
     
         return response.data, token
+    def create_employee(self, staff_token,
+                     full_name='test',
+                     national_id='012345678901823',
+                     postion='test',
+                     ):
+        data = {
+            'full_name': full_name,
+            'national_id': national_id,
+            'postion': postion
+        }
+
+        response = self.client.post(
+            '/accounts/employee/', data, format='json', HTTP_AUTHORIZATION='Bearer ' + staff_token)
+        self.assertEqual(response.status_code, 201)
+        token = self.get_token(data['national_id'], data['national_id'])
+    
+        return response.data, token
