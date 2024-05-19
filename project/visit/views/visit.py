@@ -1,4 +1,4 @@
-from visit.permissions import VisitPermission, RelatedVisitPermission
+from visit.permissions import *
 from visit.pagination      import *
 from visit.serializers     import *
 from visit.models          import *
