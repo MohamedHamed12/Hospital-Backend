@@ -54,10 +54,7 @@ class attachmentTestCase(TestSetup):
 
         url = '/visit/attachment/'
 
-        # response = self.client.post(
-        #     url, obj, HTTP_AUTHORIZATION='Bearer ' + self.staff_token )
-        # print(response.data)
-        # self.assertEqual(response.status_code, 201)
+
 
         response= self.client.post(
             url, obj, HTTP_AUTHORIZATION='Bearer ' + self.employee_token )
@@ -71,3 +68,4 @@ class attachmentTestCase(TestSetup):
         # remvove image
         os.remove("test_image.jpg")
 
+    

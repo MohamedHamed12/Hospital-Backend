@@ -41,6 +41,9 @@ class PatientViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return Patient.objects.all()
         else:
+            employee=Employee.objects.filter(user=self.request.user).first()
+            if employee:
+                return Patient.objects.all()
             doctor=Doctor.objects.filter(user=self.request.user).first()
             if doctor:
                 patients=Visit.objects.filter(doctors__in=[doctor]).values('patient').distinct()
