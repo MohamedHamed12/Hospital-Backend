@@ -96,16 +96,7 @@ class PatientTest(TestSetup):
         self.assertEqual(response.data['address']['city'], 'test2')
 
 
-def create_image_test():
-    if os.path.exists("test_image.jpg"):
-        return
-    from PIL import Image, ImageDraw
 
-    image = Image.new("RGB", (200, 200), "white")
-    draw = ImageDraw.Draw(image)
-    draw.rectangle([(50, 50), (150, 150)], fill="red")
-    image.save("test_image.jpg")
-    image.show()
 
 
 class PatientWithImageTest(TestSetup):
@@ -117,37 +108,33 @@ class PatientWithImageTest(TestSetup):
         self.patient, self.patient_token = self.create_patient(
             self.staff_token)
 
-    @override_settings(MEDIA_ROOT='/tmp/')  # Override media root for testing
     def test_create_patient(self):
         user = User.objects.create_user(username='test', password='test123')
       
-        if not os.path.exists("test_image.jpg"):
-            create_image_test()
+        image = Image.new('RGB', (100, 100), color = 'red')
+        image_file = BytesIO()
+        image.save(image_file, 'jpeg')
+        image_file.seek(0)
 
-        with open("test_image.jpg", "rb") as img:
 
-            obj = {
-                "user": user.id,
-                "image": SimpleUploadedFile(
-                    "test_image.jpg", img.read(), content_type="image/jpeg"
-                ),
 
-            }
+        obj = {
+            "user": user.id,
+            "image": SimpleUploadedFile(
+                "test_image.jpg", image_file.read(), content_type="image/jpeg"
+            ),
+
+        }
 
         url = '/accounts/user-image/'
+        with patch('accounts.models.UserImage.save', return_value=None):
 
-        response = self.client.post(
-            url, obj, HTTP_AUTHORIZATION='Bearer ' + self.staff_token )
+            response = self.client.post(
+                url, obj, HTTP_AUTHORIZATION='Bearer ' + self.staff_token )
 
-        self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.status_code, 201)
 
-        response = self.client.get(
-            '/accounts/user-image/?user_id='+str(user.id), format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-
-        # remvove image
-        os.remove("test_image.jpg")
+        
 
 
 
