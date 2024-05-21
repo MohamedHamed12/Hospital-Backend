@@ -29,7 +29,8 @@ class VisitSerializer(serializers.ModelSerializer):
     attachment = AttachmentSerializer( read_only=True, many=True,source='visit_attachments', required=False)
     class Meta:
         model = Visit
-        fields = '__all__'
+        fields = '__all__' 
+        extra_fields = ['patient_name']
 
 
 class RestoreVisitSerializer(serializers.Serializer):
