@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django_filters',
     'debug_toolbar',
     'safedelete',
+    # 'storages',
+        # 'django_dropbox_storage',
 
 ]
 
@@ -190,3 +192,42 @@ INTERNAL_IPS = [
 ]
 
 # AUTH_USER_MODEL = 'accounts.User'
+
+
+### CACHING ###
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+#     }
+# }
+
+
+
+
+
+import dj_database_url
+from decouple import config
+
+DROPBOX_APP_KEY=config('DROPBOX_APP_KEY')
+DROPBOX_APP_SECRET=config('DROPBOX_APP_SECRET')
+
+INSTALLED_APPS += (
+    'storages',
+
+)
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.dropbox.DropboxStorage",
+        "OPTIONS": {
+       
+        },
+
+    },
+   "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+DROPBOX_OAUTH2_REFRESH_TOKEN= config('DROPBOX_OAUTH2_REFRESH_TOKEN')

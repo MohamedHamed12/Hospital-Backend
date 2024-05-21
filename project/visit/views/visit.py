@@ -1,4 +1,4 @@
-from visit.permissions import VisitPermission, RelatedVisitPermission
+from visit.permissions import *
 from visit.pagination      import *
 from visit.serializers     import *
 from visit.models          import *
@@ -17,7 +17,8 @@ from safedelete import HARD_DELETE, HARD_DELETE_NOCASCADE
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 class VisitViewSet(viewsets.ModelViewSet):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
@@ -58,15 +59,20 @@ class VisitViewSet(viewsets.ModelViewSet):
             return super().destroy(request, *args, **kwargs)
     
 
-
+    # @method_decorator(cache_page(60))  
     def get_deleted(self, request, *args, **kwargs):
         paginator = self.pagination_class()
         deleted_visits = Visit.deleted_objects.all()
         result_page = paginator.paginate_queryset(deleted_visits, request)
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
-
-
+    # @method_decorator(cache_page(60))  
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    # @method_decorator(cache_page(60))  
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
  

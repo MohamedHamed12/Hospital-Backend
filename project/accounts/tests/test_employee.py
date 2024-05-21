@@ -1,56 +1,56 @@
-# from django.contrib.auth import get_user_model
-# from django.test import TestCase
-# from rest_framework.test import APIClient
+from django.test import TestCase
+from rest_framework.test import APIClient
+from django.contrib.auth import get_user_model
+User=get_user_model()
+from .test_setup import *
+import os
+from django.test import TestCase, override_settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 
-# User=get_user_model()
-# class AuthTest(TestCase):
-#     def setUp(self) -> None:
-#         self.client = APIClient()
-#     def test_signup(self):
-#         url = '/accounts/signup/'
-#         data = {
-#             'username': 'test',
-#             'password': 'test',
-#         }
-#         response = self.client.post(url, data, format='json')
-#         self.assertEqual(response.status_code, 201)
-#     def test_login(self):
-#         '''
-#         create user first
-#         '''
-#         url = '/accounts/signup/'
-#         data = {
-#             'username': 'test',
-#             'password': 'test',
-#         }
-#         response = self.client.post(url, data, format='json')
-#         '''
-#         test login
-#         '''
-#         url = '/accounts/token/'
-#         data = {
-#             'username': 'test',
-#             'password': 'test',
-#         }
-#         response = self.client.post(url, data, format='json')
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('access',response.data)
-#         self.assertIn('user',response.data)
-#     def test_creaet_employee(self):
-#         url = '/accounts/signup/'
-#         data = {
-#             'username': 'test',
-#             'password': 'test',
-#         }
-#         response = self.client.post(url, data, format='json')
-#         url = '/accounts/employee/'
-#         data = {
-#             'user': response.data['user']['id'],
-#             'first_name': 'test',
-#             'last_name': 'test',
-#             'date_of_birth': '2000-01-01',
-#             'gender': 'M',
 
-#         }
-#         response = self.client.post(url, data, format='json')
-#         self.assertEqual(response.status_code, 201)
+def create_image_test():
+    if os.path.exists("test_image.jpg"):
+        return
+    from PIL import Image, ImageDraw
+
+    image = Image.new("RGB", (200, 200), "white")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle([(50, 50), (150, 150)], fill="red")
+    image.save("test_image.jpg")
+    image.show()
+
+
+
+    
+class attachmentTestCase(TestSetup):
+    def setUp(self) -> None:
+        super().setUp()
+        self.staff, self.staff_token = self.create_staff()
+        self.patient1, self.patient1_token = self.create_patient(self.staff_token,national_id='11111111111111')
+        self.patient2, self.patient2_token = self.create_patient(self.staff_token,national_id='22222222222222')
+        self.doctor,self.doctor_token = self.create_doctor(self.staff_token,national_id='111111111111171')
+        self.visit1 = self.create_visit(self.staff_token,patient_id=self.patient1['id'])
+        self.visit2 = self.create_visit(self.staff_token,patient_id=self.patient2['id'])
+        self.employee, self.employee_token = self.create_employee(self.staff_token)
+
+        
+    def test_get_patients(self):
+            url = '/accounts/patient/'
+            response= self.client.get(
+                url, HTTP_AUTHORIZATION='Bearer ' + self.employee_token )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(response.data['results']), 2)
+    def test_create_patient(self):
+    
+        data = {
+  
+            'full_name': 'test',
+            'national_id': '012345678901234',
+         
+
+        }
+        url = '/accounts/patient/'
+        response= self.client.post(
+            url, data, HTTP_AUTHORIZATION='Bearer ' + self.employee_token )
+        self.assertEqual(response.status_code, 201)
+    

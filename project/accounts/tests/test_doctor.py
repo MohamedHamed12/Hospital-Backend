@@ -1,3 +1,4 @@
+from django.urls import reverse
 from accounts.tests.test_setup import *
 from accounts.models import *
 
@@ -44,11 +45,28 @@ class DoctorTest(TestSetup):
 
         }
 
+        response = self.client.post('/accounts/doctor/', data,
+                        format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
+        self.assertEqual(response.status_code, 400)
+
         # self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
         # response = self.client.post('/accounts/patient/', data,
         #                             format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
         # self.assertEqual(response.status_code, 201)
-        # response = self.client.post('/accounts/patient/', data,
-        #                 format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
-        # self.assertEqual(response.status_code, 400)
-
+    # def test_patient_doctors(self):
+    #     doctor,doctoken=self.create_doctor(self.staff_token,national_id="12212121212121")
+       
+    #     visit=self.create_visit(self.staff_token,doctors_ids=[doctor['id']],patient_id=self.patient['id'])
+    #     url=reverse('patient-doctors',kwargs={'pk':self.patient['id']})
+    #     response=self.client.get(url, format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
+    #     self.assertEqual(response.status_code,200)
+    #     self.assertEqual(len(response.data['results']),1)
+    def test_patient_doctors(self):
+        doctor,doctoken=self.create_doctor(self.staff_token,national_id="12212121212121")
+       
+        visit=self.create_visit(self.staff_token,doctors_ids=[doctor['id']],patient_id=self.patient['id'])
+        url=f"/accounts/patient/{self.patient['id']}/"
+        response=self.client.get(url, format='json', HTTP_AUTHORIZATION='Bearer ' + self.staff_token)
+        # print(response.data)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(len(response.data['doctors']),1)

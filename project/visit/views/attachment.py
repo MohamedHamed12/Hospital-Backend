@@ -1,4 +1,3 @@
-from visit.permissions import VisitPermission, RelatedVisitPermission
 from visit.pagination      import *
 from visit.serializers     import *
 from visit.models          import *
@@ -12,12 +11,14 @@ from visit.filters         import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters as rest_filters
 from accounts.permissions import *
-
+from visit.permissions import *
 from safedelete import HARD_DELETE, HARD_DELETE_NOCASCADE
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
@@ -31,11 +32,14 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     ]
     filterset_class =  AttachmentFilter
 
-    permission_classes=[IsAuthenticated,CustomPermission]
+    permission_classes=[IsAuthenticated,RelatedVisitPermission]
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Attachment.objects.all()
         else:
+            employee=Employee.objects.filter(user=self.request.user).first()
+            if employee:
+                return  Attachment.objects.all()
             doctor=Doctor.objects.filter(user=self.request.user).first()
             if doctor:
                 return Attachment.objects.filter(visit__doctors__in=[doctor])
@@ -64,10 +68,14 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         result_page = paginator.paginate_queryset( deleted_attachments, request)
         serializer = self.get_serializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
+    
+    # @method_decorator(cache_page(60))  
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-
-
-
+    # @method_decorator(cache_page(60))  
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
 
