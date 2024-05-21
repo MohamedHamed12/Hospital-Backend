@@ -24,6 +24,7 @@ class MeasurementSerializer(serializers.Serializer):
 
 
 class VisitSerializer(serializers.ModelSerializer):
+    patient_name = serializers.CharField(source='patient.full_name', read_only=True)
     measurement = MeasurementSerializer( required=False)
     attachment = AttachmentSerializer( read_only=True, many=True,source='visit_attachments', required=False)
     class Meta:
