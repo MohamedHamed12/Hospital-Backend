@@ -61,6 +61,7 @@ class attachmentTestCase(TestSetup):
 
         response= self.client.post(
             url, obj, HTTP_AUTHORIZATION='Bearer ' + self.employee_token )
+        print(response)
         print(response.data)
         self.assertEqual(response.status_code, 201)
         response= self.client.post(

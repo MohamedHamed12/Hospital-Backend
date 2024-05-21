@@ -36,8 +36,19 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+          DROPBOX_OAUTH2_REFRESH_TOKEN: ${{ secrets.DROPBOX_OAUTH2_REFRESH_TOKEN }}
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET : ${{ secrets.DROPBOX_APP_SECRET }}
+
+
+          
+
         run: |
           echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+
+          echo "DROPBOX_OAUTH2_REFRESH_TOKEN=$DROPBOX_OAUTH2_REFRESH_TOKEN" >> $GITHUB_ENV
+          echo "DROPBOX_APP_KEY=$DROPBOX_APP_KEY" >> $GITHUB_ENV
+          echo "DROPBOX_APP_SECRET=$DROPBOX_APP_SECRET" >> $GITHUB_ENV
 
       # - name: Prepare database
       #   run: |
