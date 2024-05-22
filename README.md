@@ -32,3 +32,9 @@
 ### Conclusion
 
 The backend of the Patient and Doctor Management System is designed to be robust, scalable, and maintainable. By leveraging Django REST Framework, automated testing, CI/CD pipelines, and Docker, the backend ensures reliable data management and seamless interactions with the frontend. This setup provides a solid foundation for building and deploying a high-quality healthcare management system.
+
+
+
+![Project (3) (1)](https://github.com/Hospital-Database/Backend/assets/90472426/7b17a0a7-4646-4ae0-8b14-db858717c0a4)
+
+
