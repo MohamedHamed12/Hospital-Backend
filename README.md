@@ -35,6 +35,6 @@ The backend of the Patient and Doctor Management System is designed to be robust
 
 
 
-![Project (3) (1)](https://github.com/Hospital-Database/Backend/assets/90472426/7b17a0a7-4646-4ae0-8b14-db858717c0a4)
+![Project (3) (2)](https://github.com/Hospital-Database/Backend/assets/90472426/d92498f2-e79d-4605-bb2a-caaf4f79b967)
 
 
