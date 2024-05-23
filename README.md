@@ -1,7 +1,5 @@
 
-
-https://github.com/Hospital-Database/Backend/assets/90472426/21d35c5f-66bd-44d8-bdf5-d585030eff97
-
+https://github.com/Hospital-Database/Backend/assets/90472426/a3ae50cd-ab5b-41c8-93f1-0ac3aa3f773a
 
 # Hospital-Backend
 
